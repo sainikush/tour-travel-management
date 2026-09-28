@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:wght@500;600&display=swap');
+@import "tailwindcss";
+
+/* =========================================================
+   DESIGN TOKENS — Tailwind v4 @theme
+   Anything defined here becomes a utility class automatically.
+   e.g. --color-primary: #0F3D3E  →  bg-primary, text-primary, border-primary
+   ========================================================= */
+@theme {
+  /* ---- Colors ---- */
+  --color-primary:        #0F3D3E;
+  --color-primary-hover:  #0A2E2F;
+  --color-primary-soft:   #E4EDEC;
+
+  --color-secondary:      #8FAF9B;
+  --color-secondary-soft: #E8EFE9;
+
+  --color-accent:         #E8734A;
+  --color-accent-hover:   #D0592F;
+  --color-accent-soft:    #FBE7DE;
+
+  --color-bg:      #F3E9D2;
+  --color-surface: #FFFDF8;
+  --color-border:  #DCD0AE;
+
+  --color-text:         #1C2521;
+  --color-text-muted:   #7A7160;
+  --color-text-inverse: #FFFDF8;
+
+  --color-success-bg: #E4EFE6;
+  --color-success-fg: #3C7A52;
+  --color-pending-bg: #FBEDD6;
+  --color-pending-fg: #9C6B1B;
+  --color-danger-bg:  #F7E1DB;
+  --color-danger-fg:  #B4472A;
+
+  /* ---- Fonts ---- */
+  --font-sans:    "Inter", system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+
+  /* ---- Font sizes (name: size / line-height) ---- */
+  --text-xs:   0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm:   0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg:   1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl:   1.375rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl:  1.75rem;
+  --text-2xl--line-height: 2.25rem;
+  --text-3xl:  2.25rem;
+  --text-3xl--line-height: 2.75rem;
+  --text-4xl:  3rem;
+  --text-4xl--line-height: 3.5rem;
+
+  /* ---- Radii ---- */
+  --radius-sm:      4px;
+  --radius-DEFAULT: 6px;   /* used by `rounded` */
+  --radius-md:      8px;
+  --radius-lg:      12px;
+  --radius-xl:      16px;
+
+  /* ---- Shadows ---- */
+  --shadow-sm:      0 1px 2px rgba(28,37,33,0.05);
+  --shadow-DEFAULT: 0 2px 8px rgba(28,37,33,0.06);
+  --shadow-md:      0 4px 16px rgba(28,37,33,0.08);
+
+  /* ---- Container ---- */
+  --container-container: 1200px;  /* → max-w-container */
+  --container-prose:     65ch;    /* → max-w-prose */
+}
+
+/* =========================================================
+   BASE LAYER
+   ========================================================= */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "cv02","cv03","cv04","cv11";
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+  h1 { font-size: var(--text-4xl); line-height: var(--text-4xl--line-height); }
+  h2 { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); }
+  h3 { font-size: var(--text-xl);  line-height: var(--text-xl--line-height); }
+
+  p { color: var(--color-text-muted); }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* =========================================================
+   COMPONENT LAYER — reusable classes
+   ========================================================= */
+@layer components {
+  .container-x {
+    max-width: var(--container-container);
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 768px) {
+    .container-x { padding-inline: 1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .container-x { padding-inline: 2rem; }
+  }
+
+  .section { padding-block: 3rem; }
+  @media (min-width: 768px)  { .section { padding-block: 4rem; } }
+  @media (min-width: 1024px) { .section { padding-block: 6rem; } }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    transition: background-color 150ms, border-color 150ms, color 150ms;
+    cursor: pointer;
+  }
+  .btn:disabled { opacity: 0.5; pointer-events: none; }
+
+  .btn-primary   { background: var(--color-accent); color: white; }
+  .btn-primary:hover { background: var(--color-accent-hover); }
+
+  .btn-secondary { background: var(--color-primary); color: white; }
+  .btn-secondary:hover { background: var(--color-primary-hover); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  }
+  .btn-outline:hover { background: var(--color-primary-soft); }
+
+  .btn-ghost { color: var(--color-primary); }
+  .btn-ghost:hover { background: var(--color-primary-soft); }
+
+  /* Card */
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  /* Input */
+  .input {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 0.75rem 1rem;
+    font-size: var(--text-sm);
+    color: var(--color-text);
+  }
+  .input::placeholder { color: color-mix(in srgb, var(--color-text-muted) 70%, transparent); }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
+  /* Eyebrow */
+  .eyebrow {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+  }
+  .badge-success { background: var(--color-success-bg); color: var(--color-success-fg); }
+  .badge-pending { background: var(--color-pending-bg); color: var(--color-pending-fg); }
+  .badge-danger  { background: var(--color-danger-bg);  color: var(--color-danger-fg);  }
+}

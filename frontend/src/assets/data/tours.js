@@ -1,0 +1,150 @@
+import tourImg01 from "../images/tour-img01.jpg";
+import tourImg02 from "../images/tour-img02.jpg";
+import tourImg03 from "../images/tour-img03.jpg";
+import tourImg04 from "../images/tour-img04.jpg";
+import tourImg05 from "../images/tour-img05.jpg";
+import tourImg06 from "../images/tour-img06.jpg";
+import tourImg07 from "../images/tour-img07.jpg";
+
+const tours = [
+  {
+    id: "01",
+    title: "Westminster Bridge",
+    city: "London",
+    distance: 300,
+    address: "Westminster, London SW1A",
+    price: 99,
+    maxGroupSize: 10,
+    desc: "A full-day guided tour through Westminster's most iconic landmarks — Big Ben, the London Eye, and a Thames river cruise at sunset.",
+    reviews: [
+      {
+        name: "Priya S.",
+        rating: 5,
+        date: "2026-01-18",
+        text: "Perfect introduction to London. The guide knew every hidden photo spot.",
+      },
+      {
+        name: "Rohan V.",
+        rating: 4,
+        date: "2025-12-03",
+        text: "Great pacing, comfortable bus, and the Thames cruise was a highlight.",
+      },
+    ],
+    photo: tourImg01,
+    featured: true,
+  },
+  {
+    id: "02",
+    title: "Bali, Indonesia",
+    city: "Indonesia",
+    distance: 400,
+    address: "Ubud, Bali",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "Five days across Ubud's rice terraces, Uluwatu's cliffside temples, and Seminyak's beach clubs — with a private driver throughout.",
+    reviews: [
+      {
+        name: "Anita R.",
+        rating: 5,
+        date: "2026-02-10",
+        text: "Best trip we've taken. The rice terrace sunrise alone was worth it.",
+      },
+    ],
+    photo: tourImg02,
+    featured: true,
+  },
+  {
+    id: "03",
+    title: "Snowy Mountains, Thailand",
+    city: "Thailand",
+    distance: 500,
+    address: "Chiang Mai, Thailand",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "Trek through northern Thailand's hill country, visit hill-tribe villages, and end each day at a mountain lodge with a view.",
+    reviews: [],
+    photo: tourImg03,
+    featured: true,
+  },
+  {
+    id: "04",
+    title: "Beautiful Sunrise, Thailand",
+    city: "Thailand",
+    distance: 500,
+    address: "Krabi, Thailand",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "Catch the sunrise over Railay Beach, kayak through limestone caves, and spend the afternoon snorkelling in the Andaman Sea.",
+    reviews: [
+      {
+        name: "Karan M.",
+        rating: 5,
+        date: "2025-11-20",
+        text: "The sunrise kayak is an experience I'll remember for years.",
+      },
+    ],
+    photo: tourImg04,
+    featured: true,
+  },
+  {
+    id: "05",
+    title: "Nusa Penida, Bali",
+    city: "Indonesia",
+    distance: 500,
+    address: "Nusa Penida, Bali",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "A day trip to Nusa Penida's Kelingking cliff, Broken Beach, and Angel's Billabong — with snorkelling at Manta Point.",
+    reviews: [],
+    photo: tourImg05,
+    featured: false,
+  },
+  {
+    id: "06",
+    title: "Cherry Blossoms Spring",
+    city: "Japan",
+    distance: 500,
+    address: "Kyoto, Japan",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "Travel Kyoto and Nara during sakura season — temples, tea houses, and the Philosopher's Path in full bloom.",
+    reviews: [
+      {
+        name: "Meera T.",
+        rating: 5,
+        date: "2025-04-05",
+        text: "Timed perfectly for the bloom. Small group, great hotels, zero stress.",
+      },
+    ],
+    photo: tourImg06,
+    featured: false,
+  },
+  {
+    id: "07",
+    title: "Holmen Lofoten",
+    city: "Norway",
+    distance: 500,
+    address: "Lofoten Islands, Norway",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "Explore the Lofoten Islands' fishing villages and jagged peaks — with a chance to see the northern lights on winter departures.",
+    reviews: [],
+    photo: tourImg07,
+    featured: false,
+  },
+  {
+    id: "08",
+    title: "Snowy Mountains, Thailand",
+    city: "Thailand",
+    distance: 500,
+    address: "Doi Inthanon, Thailand",
+    price: 99,
+    maxGroupSize: 8,
+    desc: "Summit Thailand's highest peak at dawn, then walk the twin royal chedis and the Ang Ka nature trail through cloud forest.",
+    reviews: [],
+    photo: tourImg03,
+    featured: false,
+  },
+];
+
+export default tours;
