@@ -1,46 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
+
 import CommonSection from "../shared/CommonSection";
 import SearchBar from "../shared/SearchBar";
 import TourCard from "../shared/TourCard";
 import Newsletter from "../shared/Newsletter";
-import tourData from "../assets/data/tours";
+import { api } from "../lib/api";
 
 const ITEMS_PER_PAGE = 8;
 
 const Tour = () => {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [page, setPage] = useState(0);
 
-  const pageCount = Math.ceil((tourData?.length || 0) / ITEMS_PER_PAGE);
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get("/api/tours")
+      .then((data) => {
+        if (!cancelled) setTours(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const pageCount = Math.ceil(tours.length / ITEMS_PER_PAGE);
   const start = page * ITEMS_PER_PAGE;
-  const visibleTours = tourData?.slice(start, start + ITEMS_PER_PAGE);
+  const visibleTours = tours.slice(start, start + ITEMS_PER_PAGE);
 
   return (
     <>
       <CommonSection title="All Tours" />
 
-      {/* Search bar section */}
       <section className="bg-bg pt-8 pb-4">
         <div className="container-x">
           <SearchBar />
         </div>
       </section>
 
-      {/* Tours grid */}
       <section className="section bg-bg pt-8">
         <div className="container-x">
-          {visibleTours?.length ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {visibleTours.map((tour) => (
-                <TourCard key={tour.id} tour={tour} />
-              ))}
+          {loading ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="animate-spin text-text-muted" size={28} />
             </div>
-          ) : (
+          ) : error ? (
+            <p className="text-center text-danger-fg py-12">{error}</p>
+          ) : visibleTours.length === 0 ? (
             <p className="text-center text-text-muted py-16">
               No tours available.
             </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {visibleTours.map((tour) => (
+                <TourCard key={tour._id} tour={tour} />
+              ))}
+            </div>
           )}
 
-          {/* Pagination */}
           {pageCount > 1 && (
             <div className="flex items-center justify-center gap-2 mt-12">
               {Array.from({ length: pageCount }).map((_, i) => (

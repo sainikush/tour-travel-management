@@ -6,9 +6,10 @@ const TourCard = ({ tour }) => {
   const { totalRating, avgRating } = calculateAvgRating(reviews);
 
   return (
-    <article className="group bg-surface border border-border rounded-lg overflow-hidden
-                        shadow-sm hover:shadow-md transition-shadow duration-200">
-
+    <article
+      className="group bg-surface border border-border rounded-lg overflow-hidden
+                        shadow-sm hover:shadow-md transition-shadow duration-200"
+    >
       {/* ---- Image + badge ---- */}
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary-soft">
         <img
@@ -19,9 +20,11 @@ const TourCard = ({ tour }) => {
                      group-hover:scale-[1.03] transition-transform duration-300"
         />
         {featured && (
-          <span className="absolute top-3 right-3
+          <span
+            className="absolute top-3 right-3
                            bg-accent text-white text-xs font-medium
-                           px-2.5 py-1 rounded-sm">
+                           px-2.5 py-1 rounded-sm"
+          >
             Featured
           </span>
         )}
@@ -29,7 +32,6 @@ const TourCard = ({ tour }) => {
 
       {/* ---- Body ---- */}
       <div className="p-4">
-
         {/* Meta row: location + rating */}
         <div className="flex items-center justify-between text-sm mb-3">
           <span className="inline-flex items-center gap-1.5 text-text-muted">
@@ -40,16 +42,20 @@ const TourCard = ({ tour }) => {
           <span className="inline-flex items-center gap-1 text-text">
             <i className="ri-star-fill text-accent" />
             {avgRating === 0 ? null : avgRating}
-            {totalRating === 0
-              ? <span className="text-xs text-text-muted">Not rated</span>
-              : <span className="text-xs text-text-muted">({reviews.length})</span>}
+            {totalRating === 0 ? (
+              <span className="text-xs text-text-muted">Not rated</span>
+            ) : (
+              <span className="text-xs text-text-muted">
+                ({reviews.length})
+              </span>
+            )}
           </span>
         </div>
 
         {/* Title */}
         <h3 className="text-base font-medium mb-4 leading-snug">
           <Link
-            to={`/tours/${id}`}
+            to={`/tours/${tour._id}`}
             className="text-text hover:text-accent transition-colors"
           >
             {title}
@@ -64,7 +70,7 @@ const TourCard = ({ tour }) => {
           </p>
 
           <Link
-            to={`/tours/${id}`}
+            to={`/tours/${tour._id}`}
             className="text-sm font-medium text-accent hover:text-accent-hover
                        inline-flex items-center gap-1 transition-colors"
           >
