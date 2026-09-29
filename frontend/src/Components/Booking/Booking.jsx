@@ -1,134 +1,172 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Star } from "lucide-react";
+
+import { api } from "../../lib/api";
+import { useAuth } from "../../context/AuthContext";
+
+const SERVICE_FEE = 10;
 
 const Booking = ({ tour, avgRating }) => {
-  const { price, reviews } = tour;
   const navigate = useNavigate();
+  const { isAuthed } = useAuth();
 
-  const [credentials, setCredentials] = useState({
-    userId: "01",
-    userEmail: "examples@gmail.com",
+  const [form, setForm] = useState({
     fullName: "",
     phone: "",
-    guestSize: 1,
     bookAt: "",
+    guestSize: 1,
   });
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  // ✅ FIX 1: bracket notation for computed key
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [id]: value }));
+    setForm((prev) => ({ ...prev, [id]: value }));
+    setError("");
   };
 
-  // ✅ FIX 2: correct math — subtotal + fee, not × fee
-  const serviceFee = 10;
-  const subtotal = Number(price) * Number(credentials.guestSize);
-  const totalAmount = subtotal + Number(serviceFee);
+  const guestSize = Number(form.guestSize) || 1;
+  const subtotal = Number(tour.price) * guestSize;
+  const totalAmount = subtotal + SERVICE_FEE;
 
-  // ✅ FIX 3: navigate to "/thank-you" (your route name)
-  const handleClick = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ tourId: tour.id, ...credentials, totalAmount });
-    navigate("/thank-you");
+    setError("");
+
+    if (!isAuthed) {
+      navigate("/login");
+      return;
+    }
+
+    // Guard: tour must have a real MongoDB id
+    if (!tour._id) {
+      setError("This tour cannot be booked right now (missing id).");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      await api.post("/api/bookings", {
+        tourId: tour._id,
+        travellers: guestSize,
+        bookAt: form.bookAt,
+        phone: form.phone,
+      });
+
+      navigate("/thank-you");
+    } catch (err) {
+      setError(err.message || "Booking failed. Please try again.");
+      setSubmitting(false);
+    }
   };
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-6 lg:sticky lg:top-24 h-fit">
-
-      {/* ========= booking top ============ */}
+    <aside className="lg:sticky lg:top-24 bg-surface border border-border rounded-lg p-6 h-fit">
+      {/* Top: price + rating */}
       <div className="flex items-baseline justify-between pb-5 mb-5 border-b border-border">
-        <h3 className="flex items-baseline gap-1.5">
+        <p className="flex items-baseline gap-1.5">
           <span className="text-2xl font-display font-semibold text-primary">
-            ${price}
+            ${tour.price}
           </span>
-          <span className="text-sm text-text-muted font-normal">
-            /per person
-          </span>
-        </h3>
+          <span className="text-sm text-text-muted">/ per person</span>
+        </p>
 
         <span className="inline-flex items-center gap-1 text-sm text-text">
-          <i className="ri-star-s-fill text-accent"></i>
-          {avgRating === 0 ? "Not rated" : avgRating}
-          {" "}({reviews?.length || 0})
+          <Star size={14} className="fill-accent text-accent" strokeWidth={0} />
+          {avgRating || "New"}
+          <span className="text-text-muted">({tour.reviews?.length || 0})</span>
         </span>
       </div>
 
-      {/* ========= booking form ============ */}
-      <div className="mb-6">
-        <h5 className="text-sm font-medium text-text mb-4">Information</h5>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <h5 className="text-sm font-medium text-text">Information</h5>
 
-        <form onSubmit={handleClick} className="space-y-3">
-          {/* ✅ FIX 4: input id matches state key exactly — "fullName" not "fullname" */}
-          <input
-            type="text"
-            id="fullName"
-            placeholder="Full name"
-            required
-            value={credentials.fullName}
-            onChange={handleChange}
-            className="input"
-          />
+        {/* Full name */}
+        <input
+          type="text"
+          id="fullName"
+          placeholder="Full name"
+          required
+          value={form.fullName}
+          onChange={handleChange}
+          className="input"
+        />
 
-          <input
-            type="tel"
-            id="phone"
-            placeholder="Phone number"
-            required
-            value={credentials.phone}
-            onChange={handleChange}
-            className="input"
-          />
+        {/* Phone */}
+        <input
+          type="tel"
+          id="phone"
+          placeholder="Phone number"
+          required
+          value={form.phone}
+          onChange={handleChange}
+          className="input"
+        />
 
-          {/* ✅ FIX 5: id="bookAt" matches state key — was "date" */}
-          <input
-            type="date"
-            id="bookAt"
-            required
-            value={credentials.bookAt}
-            onChange={handleChange}
-            className="input"
-          />
+        {/* Date */}
+        <input
+          type="date"
+          id="bookAt"
+          required
+          value={form.bookAt}
+          onChange={handleChange}
+          className="input"
+        />
 
-          <input
-            type="number"
-            id="guestSize"
-            placeholder="Guests"
-            min={1}
-            required
-            value={credentials.guestSize}
-            onChange={handleChange}
-            className="input"
-          />
+        {/* Guests — full-width row, matches other inputs */}
+        <input
+          type="number"
+          id="guestSize"
+          min={1}
+          max={tour.maxGroupSize || 10}
+          placeholder="Guests"
+          required
+          value={form.guestSize}
+          onChange={handleChange}
+          className="input"
+        />
 
-          {/* ========= price breakdown (inside form so it submits together) ========= */}
-          <div className="pt-4 border-t border-border space-y-2.5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-text-muted">
-                ${price} × {credentials.guestSize}{" "}
-                {Number(credentials.guestSize) === 1 ? "person" : "people"}
-              </span>
-              <span className="text-text">${subtotal.toLocaleString()}</span>
-            </div>
+        {/* Error */}
+        {error && (
+          <div className="px-3 py-2 rounded-md bg-danger-bg text-danger-fg text-sm">
+            {error}
+          </div>
+        )}
 
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-text-muted">Service charge</span>
-              <span className="text-text">${serviceFee}</span>
-            </div>
-
-            <div className="flex items-center justify-between pt-2.5 border-t border-border">
-              <span className="font-medium text-text">Total</span>
-              <span className="text-xl font-display font-semibold text-primary">
-                ${totalAmount.toLocaleString()}
-              </span>
-            </div>
+        {/* Price breakdown */}
+        <div className="pt-4 border-t border-border space-y-2.5">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-text-muted">
+              ${tour.price} × {guestSize} {guestSize === 1 ? "person" : "people"}
+            </span>
+            <span className="text-text">${subtotal.toLocaleString()}</span>
           </div>
 
-          <button type="submit" className="btn-primary w-full">
-            Book now
-          </button>
-        </form>
-      </div>
-    </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-text-muted">Service charge</span>
+            <span className="text-text">${SERVICE_FEE}</span>
+          </div>
+
+          <div className="flex items-center justify-between pt-2.5 border-t border-border">
+            <span className="font-medium text-text">Total</span>
+            <span className="text-xl font-display font-semibold text-primary">
+              ${totalAmount.toLocaleString()}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="btn-primary w-full rounded-md disabled:opacity-60"
+        >
+          {submitting ? "Booking..." : "Book now"}
+        </button>
+      </form>
+    </aside>
   );
 };
 

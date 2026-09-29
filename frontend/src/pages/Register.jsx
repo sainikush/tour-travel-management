@@ -1,27 +1,43 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import registerImg from "../assets/images/register.png";
 import userIcon from "../assets/images/user.png";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const [credentials, setCredentials] = useState({
     userName: "",
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setCredentials((prev) => ({ ...prev, [id]: value }));
+    setError("");
   };
 
-  const handleClick = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: real register call → then navigate
-    console.log(credentials);
-    navigate("/home");
+    setError("");
+    setSubmitting(true);
+
+    try {
+      await register({
+        name: credentials.userName,
+        email: credentials.email,
+        password: credentials.password,
+      });
+      navigate("/home");
+    } catch (err) {
+      setError(err.message || "Registration failed.");
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -29,10 +45,7 @@ const Register = () => {
       <div className="container-x">
         <div className="max-w-4xl mx-auto">
           <div className="card overflow-hidden grid grid-cols-1 md:grid-cols-2">
-
-            {/* ---- Illustration ---- */}
-            <div className="hidden md:flex items-center justify-center
-                            bg-secondary-soft p-8">
+            <div className="hidden md:flex items-center justify-center bg-secondary-soft p-8 lg:p-10">
               <img
                 src={registerImg}
                 alt=""
@@ -40,11 +53,8 @@ const Register = () => {
               />
             </div>
 
-            {/* ---- Form ---- */}
             <div className="p-8 md:p-10">
-              <div className="w-14 h-14 mx-auto mb-5 rounded-full
-                              bg-accent text-white
-                              flex items-center justify-center">
+              <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-accent text-white flex items-center justify-center">
                 <img src={userIcon} alt="" className="w-7 h-7 object-contain" />
               </div>
 
@@ -53,8 +63,13 @@ const Register = () => {
                 Join us — start booking tours in minutes
               </p>
 
-              <form onSubmit={handleClick} className="space-y-4">
-                {/* ✅ FIX: id="userName" matches state key */}
+              {error && (
+                <div className="mb-4 px-3 py-2 rounded-md bg-danger-bg text-danger-fg text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                   type="text"
                   id="userName"
@@ -80,19 +95,23 @@ const Register = () => {
                   id="password"
                   placeholder="Password"
                   required
+                  minLength={6}
                   value={credentials.password}
                   onChange={handleChange}
                   className="input"
                 />
 
-                <button type="submit" className="btn-primary w-full">
-                  Create account
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-primary w-full disabled:opacity-60"
+                >
+                  {submitting ? "Creating account..." : "Create account"}
                 </button>
               </form>
 
               <p className="text-center text-sm text-text-muted mt-6">
                 Already have an account?{" "}
-                {/* ✅ FIX: /loginr → /login */}
                 <Link
                   to="/login"
                   className="text-accent font-medium hover:text-accent-hover"
@@ -101,7 +120,6 @@ const Register = () => {
                 </Link>
               </p>
             </div>
-
           </div>
         </div>
       </div>

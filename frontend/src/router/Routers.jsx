@@ -11,6 +11,7 @@ import TourDetails from "../pages/TourDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ThankYou from "../pages/ThankYou";
+import MyBookings from "../pages/MyBookings";
 import About from "../pages/About";
 
 // Admin pages
@@ -35,6 +36,7 @@ const Routers = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/thank-you" element={<ThankYou />} />
+         <Route path="/my-bookings"    element={<MyBookings />} />
       </Route>
 
       {/* ---------- ADMIN AUTH REDIRECT ---------- */}

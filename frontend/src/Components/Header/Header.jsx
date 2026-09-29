@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/images/logo.png";
 
 const NAV_LINKS = [
@@ -11,6 +12,8 @@ const NAV_LINKS = [
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const { isAuthed, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Lock body scroll while mobile menu is open
   useEffect(() => {
@@ -19,6 +22,12 @@ const Header = () => {
   }, [open]);
 
   const closeMenu = () => setOpen(false);
+
+  const handleLogout = async () => {
+    await logout();
+    closeMenu();
+    navigate("/home");
+  };
 
   const linkBase   = "text-sm font-medium transition-colors duration-150 hover:text-accent";
   const linkActive = "text-accent";
@@ -54,8 +63,19 @@ const Header = () => {
 
           {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login"    className="btn-ghost">Log in</Link>
-            <Link to="/register" className="btn-primary">Sign up</Link>
+            {!isAuthed ? (
+              <>
+               <Link to="/login" className="btn-ghost rounded-md">Log in</Link>
+<Link to="/register" className="btn-primary rounded-md">Sign up</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/my-bookings" className="btn-ghost rounded-md">My bookings</Link>
+                <button onClick={handleLogout} className="btn-outline rounded-md">
+                  Log out
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile toggle */}
@@ -99,8 +119,24 @@ const Header = () => {
             </ul>
 
             <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
-              <Link to="/login"    onClick={closeMenu} className="btn-outline w-full">Log in</Link>
-              <Link to="/register" onClick={closeMenu} className="btn-primary w-full">Sign up</Link>
+              {!isAuthed ? (
+                <>
+                 <Link to="/login" onClick={closeMenu} className="btn-outline rounded-md w-full">
+                    Log in
+                  </Link>
+                 <Link to="/register" onClick={closeMenu} className="btn-primary rounded-md w-full">
+                  </Link>
+                </>
+              ) : (
+                <>
+                 <Link to="/my-bookings" onClick={closeMenu} className="btn-ghost rounded-md w-full">
+                    My bookings
+                  </Link>
+                  <button onClick={handleLogout} className="btn-outline rounded-md w-full">
+  Log out
+</button>
+                </>
+              )}
             </div>
           </nav>
         </div>
