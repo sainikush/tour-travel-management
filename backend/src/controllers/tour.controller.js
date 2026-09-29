@@ -23,8 +23,14 @@ export const getTours = async (req, res) => {
   }
 };
 
+import mongoose from "mongoose";
+
 export const getTourById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: "Tour not found" });
+    }
+
     const tour = await Tour.findById(req.params.id);
     if (!tour) {
       return res.status(404).json({ message: "Tour not found" });
